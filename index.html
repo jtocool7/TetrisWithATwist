@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+   <meta name="veiwport" content="width=device-width,initial-scale=1.0">
+  <title>Time To Slide!</title>
+  <style>
+  *{
+font-family:calibri;
+}
+  canvas{
+    border:1px solid #000;
+    display:block;
+    margin: 0 auto;
+    z-index:1
+  } 
+  #nope{
+    position:absolute;
+    top:700px;
+     border-radius:10px;
+     right:325px;
+  }
+  .hide{
+    display:none;
+   
+  }
+  
+  #left{
+      position:absolute;
+    top:700px;
+     border-radius:10px;
+     right:550px;
+  }
+  
+  #right{
+     position:absolute;
+    top:700px;
+     border-radius:10px;
+     right:100px;
+  }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" height=600 width=600></canvas>
+  
+     <button id="nope" onclick="move({keyCode: 38})" type="button" name="button">Jump (Mobile)</button> 
+ 
+  
+   
+   <button id="left" onclick="move({keyCode: 37})">Left(Mobile)</button> 
+   
+   <button id="right" onclick="move({keyCode:39})">Right(Mobile)</button>
+   
+  <img class="hide" src="https://user-images.githubusercontent.com/18351809/46888871-624a3900-ce7f-11e8-808e-99fd90c8a3f4.png" alt="background">
+  
+  <img class="hide" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Tetris_L.svg/1280px-Tetris_L.svg.png" alt=" mi block">
+  
+  <img class="hide" src="https://www.pngkit.com/png/full/140-1400596_wow-l-tetris-block-body-tetris-l-block.png" alt="l block">
+  
+  <img class= "hide" src="https://www.shortlist.com/media/images/2019/05/dc4f6ea4e4693f74503fd5b415296019-1556727941-k0JN-column-width-inline.png" alt="step block">
+  
+  <img class="hide"src="https://www.shortlist.com/media/images/2019/05/4ff12465822ecdc63cb4bf31f8f78a53-1556727940-OKhN-column-width-inline.png" alt="t block">
+  
+  <img id="start" class="hide" src="https://lh3.googleusercontent.com/proxy/QCP0P2EKGISizEx0CwrnKUB6XBw8-PFtPik70NLRujq2YshfUcVMOVx4YWjN6iE9Xo9iByUos_O1lTkwktsgZz1oENBZOvZR" alt="start">
+  
+  <img id="end" class="hide" src="https://www.seekpng.com/png/full/239-2391119_game-over-sticker-game-over-button-png.png" alt="end sprite">
+  
+  <img id="stand" class="hide" src="https://pbs.twimg.com/media/ELGbFDpWwAAq5LP.png" alt="mario sprite">
+  
+  <img id="jump" class="hide" src="https://art.pixilart.com/a3e66ea08ee6f97.png" alt="mario jump sprite">
+  <p>
+  code<b>myster</b>
+  </p>
+  
+  <script>
+  const cvs = document.getElementById('canvas');
+  const cxt = cvs.getContext("2d");
+  
+  
+  
+ var state = {
+  getReady:0 ,
+  current: 0,
+  game: 1,
+  over: 2
+  }
+  
+  cvs.addEventListener('click', function(evt){
+  switch (state.current){
+case state.getReady:
+state.current = state.game;
+break;
+case state.over:
+state.current = state.getReady;
+break;
+}
+  })
+  
+   var xPos = 275;
+ var yPos = 550;
+ let gravity = 1;
+ let isJumping = false;
+ let isGoingLeft = false;
+ let isGoingRight = false;
+
+
+ function move(e) {
+ if(state.current == state.game){
+ if (isJumping) return;
+
+   let timerId = setInterval(function() {
+     if (yPos < 250) {
+       clearInterval(timerId);
+       isGoingRight = false;
+    isGoingLeft = false;
+       let timerDownId = setInterval(function() {
+         if (yPos > 530) {
+           clearInterval(timerDownId);
+           isJumping = false;
+         }
+         yPos += 5;
+
+       }, 20)
+     }
+
+     if (e.keyCode == 38) {
+     isGoingRight = false;
+     isGoingLeft = false;
+       isJumping = true;
+       yPos -= 10;
+       yPos = yPos * gravity;
+       
+     }
+   }, 20)
+   
+   let sadness = setInterval(function(){
+    
+     if(e.keyCode == 39){
+     isGoingRight = true;
+     isJumping = false;
+    xPos += 10;
+    xPos = xPos * gravity;
+    }
+     if(e.keyCode == 37){
+ isGoingLeft = true;
+  isJumping = false;
+    xPos -= 10;
+      xPos = xPos * gravity;
+    }
+    if(xPos <= xPos + 10 || xPos == xPos - 10 ){
+    clearInterval(sadness);
+    isGoingRight = false;
+    isGoingLeft = false;
+    }
+},20)
+    }
+    
+    
+    
+   
+ }
+   
+    
+
+ document.onkeydown = move;
+
+
+ 
+ function drawMario(){
+if(state.current == state.getReady || state.current == state.game  && isJumping == false){
+cxt.drawImage(stand, xPos, yPos, 50,50);
+}else if(state.current == state.game && isJumping == true){
+cxt.drawImage(jump, xPos, yPos, 50,50);
+}
+if(yPos > cvs.height - 20){
+yPos = 550;
+}
+}
+
+function drawMario2(){
+if(state.current == state.over){
+cxt.drawImage(stand, xPos, yPos, 50,50);
+}
+}
+
+  
+  function drawWords(){
+if (state.current == state.getReady) {
+     cxt.fillStyle = "black";
+     cxt.font = "20px calibri";
+     cxt.fillText(" Welcome to Time To Slide!", cvs.height / 2 - 95, 18);
+     cxt.fillText("Press play to start ", cvs.height / 2  -60, 35);
+   }else if (state.current == state.over) {
+     cxt.fillStyle = "black";
+     cxt.font = "20px calibri";
+     cxt.fillText("Game Over!", cvs.height / 2 - 60, 18);
+     cxt.fillText("Press replay to start ", cvs.height / 2  -85, 35);
+   }
+}
+  
+  const bg = new Image();
+  bg.src = "https://user-images.githubusercontent.com/18351809/46888871-624a3900-ce7f-11e8-808e-99fd90c8a3f4.png";
+  
+  
+  function background(){
+  this.x = 0,  this.y = 0, this.w = bg.width, this.h = bg.height;
+  this.render = function(){
+if(state.current == state.getReady || state.current == state.over){
+cxt.drawImage(bg,0,0,900,600);
+}
+if(state.current == state.game){
+cxt.drawImage(bg,this.x--,this.y, 900,600);
+if(this.x <= -450){
+ this.x = 0;
+}
+}
+}
+  }
+  
+  var background = new background();
+  
+  
+  const bg2 = new Image();
+  bg2.src = "https://user-images.githubusercontent.com/18351809/46888871-624a3900-ce7f-11e8-808e-99fd90c8a3f4.png";
+  
+  function lol(){
+  this.x = 600, this.y = 0, this.w = bg2.width, this.h = bg2.height;
+  this.render = function(){
+if(state.current == state.game ){
+cxt.drawImage(bg2, this.x--, this.y, 900, 600);
+if(this.x <= -450){
+ this.x = 0;
+}
+}
+}
+  }
+  
+  var lol = new lol();
+  
+  
+  function drawStart(){
+
+if(state.current == state.getReady){
+cxt.drawImage(start, cvs.height/2 - 125, cvs.width/2 -125, 250,250);
+}
+
+}
+
+function drawEnd(){
+if(state.current == state.over){
+cxt.drawImage(end, cvs.height/2 - 135, cvs.width/2 -125, 270,230);
+}
+
+
+}
+  
+  function draw(){
+    cxt.fillStyle = "#70c5ce";
+   cxt.fillRect(0, 0, cvs.width, cvs.height);
+  }
+  
+  function loop(){
+   requestAnimationFrame(loop);
+draw();
+background.render();
+lol.render();
+drawStart();
+drawWords();
+drawEnd();
+drawMario();
+drawMario2();
+}
+
+loop();
+  </script>
+</body>
+</html>
