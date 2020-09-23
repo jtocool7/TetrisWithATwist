@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-   
+   <meta name="veiwport" content="width=device-width,initial-scale=1.0">
   <title>Time To Slide!</title>
   <style>
   *{
@@ -76,6 +76,8 @@ font-family:calibri;
   <img id="stand" class="hide" src="https://pbs.twimg.com/media/ELGbFDpWwAAq5LP.png" alt="mario sprite">
   
   <img id="jump" class="hide" src="https://art.pixilart.com/a3e66ea08ee6f97.png" alt="mario jump sprite">
+  
+  <audio id="sound" src="https://vgmdownloads.com/soundtracks/super-mario-bros/khbnvkqp/01%20-%20Super%20Mario%20Bros.mp3"></audio>
   <p>
   code<b>myster</b>
   </p>
@@ -97,6 +99,11 @@ font-family:calibri;
   switch (state.current){
 case state.getReady:
 state.current = state.game;
+
+sound.play();
+let soundPlay = setInterval(function(){
+sound.play();
+},120000)
 break;
 case state.over:
 state.current = state.getReady;
@@ -180,7 +187,7 @@ cxt.drawImage(stand, xPos, yPos, 50,50);
 }else if(state.current == state.game && isJumping == true){
 cxt.drawImage(jump, xPos, yPos, 50,50);
 }
-if(yPos > cvs.height - 20){
+if(yPos > cvs.height - 45){
 yPos = 550;
 }
 }
@@ -224,6 +231,12 @@ if(this.x <= -450){
 }
 }
   }
+  
+  
+  // tetris blocks
+  var tblock = new Image();
+  tblock.src = "https://www.shortlist.com/media/images/2019/05/4ff12465822ecdc63cb4bf31f8f78a53-1556727940-OKhN-column-width-inline.png";
+  
   
   var background = new background();
   
