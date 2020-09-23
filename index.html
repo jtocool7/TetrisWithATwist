@@ -78,6 +78,11 @@ font-family:calibri;
   <img id="jump" class="hide" src="https://art.pixilart.com/a3e66ea08ee6f97.png" alt="mario jump sprite">
   
   <audio id="sound" src="https://vgmdownloads.com/soundtracks/super-mario-bros/khbnvkqp/01%20-%20Super%20Mario%20Bros.mp3"></audio>
+  <audio id="sound2" src="https://www.myinstants.com/media/sounds/super-mario-bros_e5hRRa6.mp3"></audio>
+  <audio id="sound3" src="https://www.myinstants.com/media/sounds/super-mario-death-sound-sound-effect.mp3"></audio>
+  <audio id="coinSound" src="https://www.myinstants.com/media/sounds/super-mario-coin-sound_rp53n4m.mp3"></audio>
+  
+  <audio id="1up sound" src="https://www.myinstants.com/media/sounds/nsmb_power-up.mp3"></audio>
   <p>
   code<b>myster</b>
   </p>
@@ -89,10 +94,15 @@ font-family:calibri;
   
   
  var state = {
-  getReady:0 ,
+  getReady:0,
   current: 0,
   game: 1,
   over: 2
+  }
+  
+  var user = {
+  score : 5,
+  lol : 0
   }
   
   cvs.addEventListener('click', function(evt){
@@ -115,6 +125,7 @@ break;
  let isJumping = false;
  let isGoingLeft = false;
  let isGoingRight = false;
+ let spemush = false;
 
 
  function move(e) {
@@ -122,7 +133,7 @@ break;
  if (isJumping) return;
 
    let timerId = setInterval(function() {
-     if (yPos < 250) {
+     if (yPos < 350) {
        clearInterval(timerId);
        isGoingRight = false;
     isGoingLeft = false;
@@ -142,6 +153,7 @@ break;
        isJumping = true;
        yPos -= 10;
        yPos = yPos * gravity;
+       sound2.play();
        
      }
    }, 20)
@@ -188,6 +200,14 @@ cxt.drawImage(jump, xPos, yPos, 50,50);
 if(yPos > cvs.height - 45){
 yPos = 550;
 }
+if(xPos < 0){
+xPos = 600;
+}else if(xPos > 600){
+xPos = 0;
+}
+
+
+
 }
 
 function drawMario2(){
@@ -203,10 +223,16 @@ if (state.current == state.getReady) {
      cxt.font = "20px calibri";
      cxt.fillText(" Welcome to Time To Slide!", cvs.height / 2 - 95, 18);
      cxt.fillText("Press play to start ", cvs.height / 2  -60, 35);
-   }else if (state.current == state.over) {
+   }else if(state.current == state.game){
+  
+    cxt.fillStyle = "black";
+     cxt.font = "20px calibri";
+      cxt.fillText("Your Score Is:", cvs.height / 2 + 140, 17);
+   cxt.fillText(user.score, cvs.height / 2 + 250, 18);
+   } else if (state.current == state.over) {
      cxt.fillStyle = "black";
      cxt.font = "20px calibri";
-     cxt.fillText("Game Over!", cvs.height / 2 - 60, 18);
+     cxt.fillText("Game Over!", cvs.height / 2 - 60, 20);
      cxt.fillText("Press replay to start ", cvs.height / 2  -85, 35);
    }
 }
@@ -231,10 +257,141 @@ if(this.x <= -450){
   }
   
   
+  // mario coin
+  var coin = new Image();
+  coin.src = "https://i.pinimg.com/originals/21/c0/40/21c0403207a38659937fe764d93d20f0.png";
+
+ 
+  function cin(){
+  this.x = 350, this.y = 30, this.h = coin.height, this.w = coin.width;
+  this.render = function(){
+  if(state.current == state.game){
+  cxt.drawImage(coin, this.x,this.y++, 50,50);
+
+  if(this.y > 600){
+ this.y = -500;
+ }
+
+
+  }
+  }
+  }
+  
+  var cin = new cin();
+  
+  
+  var coin2 = new Image();
+  coin2.src = "https://i.pinimg.com/originals/21/c0/40/21c0403207a38659937fe764d93d20f0.png";
+  
+  function cout(){
+  this.x = 100, this.y = -450, this.h = coin2.height, this.width = coin2.width;
+  this.render = function(){
+    if(state.current == state.game){
+    cxt.drawImage(coin2, this.x, this.y++, 50,50);
+    if(this.y > 600){
+    this.y = -900;
+    }
+    }
+}
+}
+
+var cout = new cout();
+
+var coin3 = new Image();
+coin3.src = "https://i.pinimg.com/originals/21/c0/40/21c0403207a38659937fe764d93d20f0.png";
+
+function char(){
+this.x = 500, this.y = -900, this.h = coin3.height, this.w = coin3.width;
+this.render = function(){
+if(state.current == state.over){
+cxt.drawImage(coin3, this.x, this.y++, 50,50);
+if(this.y > 600){
+this.y = -1200;
+}
+}
+}
+}
+
+var char = new char();
+  
   // tetris blocks
   var tblock = new Image();
   tblock.src = "https://www.shortlist.com/media/images/2019/05/4ff12465822ecdc63cb4bf31f8f78a53-1556727940-OKhN-column-width-inline.png";
   
+  function int(){
+  this.x = 300, this.y = 20, this.h = tblock.height, this.w = tblock.width;
+  this.render = function(){
+if(state.current == state.game){
+cxt.drawImage(tblock, this.x, this.y++, 200,150);
+if(this.y > 600){
+this.y = -300;
+}
+}
+}
+} 
+  
+  var int = new int();
+  
+  var miblock = new Image();
+  miblock.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Tetris_L.svg/1280px-Tetris_L.svg.png";
+  
+  function bool(){
+   this.x = 50, this.y = -100, this.h = miblock.height, this.w = miblock.width;
+   this.render = function(){
+   if(state.current == state.game){
+   cxt.drawImage(miblock, this.x, this.y++, 200, 150);
+   if(this.y > 600){
+   this.y = -150;
+   }
+   }
+   }
+
+}
+
+var bool = new bool();
+
+
+var special = new Image();
+special.src = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/88168051-ac5d-4131-8981-bfadfe509221/db10lgx-72baed61-aa3f-47ef-b3e0-d36ce3563b8d.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvODgxNjgwNTEtYWM1ZC00MTMxLTg5ODEtYmZhZGZlNTA5MjIxXC9kYjEwbGd4LTcyYmFlZDYxLWFhM2YtNDdlZi1iM2UwLWQzNmNlMzU2M2I4ZC5wbmcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.K5nbwE3L5Y617lB9NX0SbtEP7oVAhl9uTeBMlVbSXYw";
+
+function mushroom(){
+this.x = xPos, this.y = -100, this.w = special.width, this.h = special.height;
+this.render = function(){
+if(state.current == state.game/* && user.score == 5 || user.score == 10 || user.score == 15 || user.score == 20 || user.score == 25 || user.score == 30*/){
+
+
+spemush = true;
+cxt.drawImage(special, this.x, this.y++, 50,50);
+while(spemush == true){
+user.lol++;
+
+}
+
+console.log(user.lol);
+
+
+}
+}
+}
+
+var mushroom = new mushroom();
+
+var stepblock = new Image();
+stepblock.src = "https://www.shortlist.com/media/images/2019/05/dc4f6ea4e4693f74503fd5b415296019-1556727941-k0JN-column-width-inline.png";
+
+function roar(){
+this.x = 250, this.y = -500, this.h = stepblock.height, this.w = stepblock.width;
+this.render = function(){
+if(state.current == state.game){
+cxt.drawImage(stepblock, this.x, this.y++, 200, 150);
+if(this.y > 600){
+this.y = -1000;
+}
+}
+}
+}
+
+var roar = new roar();
   
   var background = new background();
   
@@ -268,10 +425,20 @@ cxt.drawImage(start, cvs.height/2 - 125, cvs.width/2 -95, 250,109);
 function drawEnd(){
 if(state.current == state.over){
 cxt.drawImage(end, cvs.height/2 - 135, cvs.width/2 -50, 300,100);
+sound3.play();
 }
 
 
 }
+
+
+
+// colission detection
+function collision(){
+
+}
+ 
+ 
   
   function draw(){
     cxt.fillStyle = "#70c5ce";
@@ -279,15 +446,23 @@ cxt.drawImage(end, cvs.height/2 - 135, cvs.width/2 -50, 300,100);
   }
   
   function loop(){
+collision();
    requestAnimationFrame(loop);
 draw();
+char.render();
 background.render();
 lol.render();
+cin.render();
+roar.render();
+cout.render();
 drawStart();
+int.render();
 drawWords();
 drawEnd();
 drawMario();
 drawMario2();
+bool.render();
+mushroom.render();
 }
 
 loop();
