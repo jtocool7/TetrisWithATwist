@@ -81,6 +81,7 @@ font-family:calibri;
   <audio id="sound2" src="https://www.myinstants.com/media/sounds/super-mario-bros_e5hRRa6.mp3"></audio>
   <audio id="sound3" src="https://www.myinstants.com/media/sounds/super-mario-death-sound-sound-effect.mp3"></audio>
   <audio id="coinSound" src="https://www.myinstants.com/media/sounds/super-mario-coin-sound_rp53n4m.mp3"></audio>
+  <audio src="https://www.myinstants.com/media/sounds/super-mario-bros_b87NL6J.mp3"></audio>
   
   <audio id="1up sound" src="https://www.myinstants.com/media/sounds/nsmb_power-up.mp3"></audio>
   <p>
@@ -101,7 +102,7 @@ font-family:calibri;
   }
   
   var user = {
-  score : 5,
+  score : 1,
   lol : 0
   }
   
@@ -357,19 +358,15 @@ special.src = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/8816805
 function mushroom(){
 this.x = xPos, this.y = -100, this.w = special.width, this.h = special.height;
 this.render = function(){
-if(state.current == state.game/* && user.score == 5 || user.score == 10 || user.score == 15 || user.score == 20 || user.score == 25 || user.score == 30*/){
+if(state.current == state.game && user.score == 5 || user.score == 10 || user.score == 15 || user.score == 20 || user.score == 25 || user.score == 30){
 
 
 spemush = true;
 cxt.drawImage(special, this.x, this.y++, 50,50);
-while(spemush == true){
-user.lol++;
-
+if(spemush == true){
+user.lol ++;
 }
-
 console.log(user.lol);
-
-
 }
 }
 }
@@ -459,10 +456,10 @@ drawStart();
 int.render();
 drawWords();
 drawEnd();
-drawMario();
-drawMario2();
 bool.render();
 mushroom.render();
+drawMario();
+drawMario2();
 }
 
 loop();
