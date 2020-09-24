@@ -8,7 +8,7 @@
   *{
 font-family:calibri;
 }
-  canvas{
+  #canvas{
     border:1px solid #000;
     display:block;
     margin: 0 auto;
@@ -40,9 +40,20 @@ font-family:calibri;
      right:100px;
      
   }
+  #display{
+    position:absolute;
+    border:1px solid #000;
+  
+    z-index:1;
+    left:75px;
+    border-radius:50px;
+}
   </style>
 </head>
 <body>
+<canvas class="hide" id="display" width="250" height="25"></canvas>
+<br>
+<br>
   <canvas id="canvas" height=600 width=600></canvas>
  
     <button id="nope" onclick="move({keyCode: 38})" type="button" name="button">Jump (Mobile)</button> 
@@ -91,7 +102,8 @@ font-family:calibri;
   <script>
   const cvs = document.getElementById('canvas');
   const cxt = cvs.getContext("2d");
-  
+  const display = document.getElementById('display');
+  const no = display.getContext("2d");
   
   
  var state = {
@@ -127,7 +139,7 @@ break;
  let isGoingLeft = false;
  let isGoingRight = false;
  let spemush = false;
-
+ let health = 100;
 
  function move(e) {
  if(state.current == state.game){
@@ -185,8 +197,43 @@ break;
     
    
  }
+ 
+ 
+ 
+ 
+ 
+ // health
    
-    
+    function healthBar(){
+    this.render = function(){
+    if(state.current == state.game || state.current == state.over){
+display.classList.remove('hide');
+
+if(health == 100){
+no.fillStyle = "#90ee90";
+no.fillRect(0,0,display.width, display.height);
+}else if(health == 80){
+no.fillStyle = "#006400";
+no.fillRect(0,0, display.width * 0.8 ,display.height);
+}else if(health == 60){
+no.fillStyle = "#ffff00";
+no.fillRect(0,0, display.width * 0.6, display.height);
+}else if(health == 40){
+no.fillStyle ="#FF8C00";
+no.fillRect(0,0, display.width * 0.4, display.height);
+}else if(health == 20){
+no.fillStyle = "#8B0000";
+no.fillRect(0,0,display.width * 0.2, display.height);
+}else if(health == 0){
+state.current = state.over;
+}
+}
+
+}
+
+}
+
+var healthBar = new healthBar();
 
  document.onkeydown = move;
 
@@ -264,7 +311,7 @@ if(this.x <= -450){
 
  
   function cin(){
-  this.x = 350, this.y = 30, this.h = coin.height, this.w = coin.width;
+  this.x = 350, this.y = -50, this.h = coin.height, this.w = coin.width;
   this.render = function(){
   if(state.current == state.game){
   cxt.drawImage(coin, this.x,this.y++, 50,50);
@@ -365,7 +412,14 @@ spemush = true;
 cxt.drawImage(special, this.x, this.y++, 50,50);
 if(spemush == true){
 user.lol ++;
+if(user.lol > 3000){
+spemush = false;
+if(user.score == 5*2 || user.score == 5*3 || user.score == 5*4 || user.score == 5*5 || user.score == 5*6){
+user.lol = 0;
 }
+}
+}
+
 }
 }
 }
@@ -445,12 +499,9 @@ function collision(){
 collision();
    requestAnimationFrame(loop);
 draw();
-char.render();
+
 background.render();
 lol.render();
-cin.render();
-roar.render();
-cout.render();
 drawStart();
 int.render();
 drawWords();
@@ -459,6 +510,10 @@ bool.render();
 mushroom.render();
 drawMario();
 drawMario2();
+char.render();
+cin.render();
+cout.render();
+healthBar.render();
 }
 
 loop();
